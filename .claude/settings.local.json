@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv \"/Users/rajat/Desktop/Performance profiler\" \"/Users/rajat/Desktop/PerformanceProfiler\" && echo \"Done\")"
+    ]
+  }
+}
