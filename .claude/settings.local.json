@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mv \"/Users/rajat/Desktop/Performance profiler\" \"/Users/rajat/Desktop/PerformanceProfiler\" && echo \"Done\")"
+      "Bash(mv \"/Users/rajat/Desktop/Performance profiler\" \"/Users/rajat/Desktop/PerformanceProfiler\" && echo \"Done\")",
+      "Bash(ls ~/.ssh/*.pub 2>/dev/null || echo \"No existing keys\")",
+      "Bash(ssh-keygen -t ed25519 -C \"rajatsha90271@github\" -f ~/.ssh/id_ed25519_rajatsha90271 -N \"\")",
+      "Bash(cat >> *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)",
+      "Bash(git push *)"
     ]
   }
 }
