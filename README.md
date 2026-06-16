@@ -127,6 +127,44 @@ do {
 }
 ```
 
+### 5. Using the overlay in a UIKit project
+
+`ProfilerOverlayView` is a SwiftUI view, so host it with `UIHostingController` and add it as a child view controller pinned to the edges of your root view:
+
+```swift
+import UIKit
+import SwiftUI
+import ProfilerUI
+import PerformanceProfiler
+
+class ViewController: UIViewController {
+    let profiler = PerformanceProfiler()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let overlay = ProfilerOverlayView(profiler: profiler)
+        let hostingController = UIHostingController(rootView: overlay)
+        hostingController.view.backgroundColor = .clear
+
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+        hostingController.didMove(toParent: self)
+
+        Task { await profiler.start() }
+    }
+}
+```
+
+`PerformanceProfiler` and `TraceExporter` have no UIKit/SwiftUI dependency at all — you can use the Combine publisher or `currentTrace()` directly in any UIKit app without touching `ProfilerUI`.
+
 ---
 
 ## Configuration
