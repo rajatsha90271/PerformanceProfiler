@@ -165,6 +165,55 @@ class ViewController: UIViewController {
 
 `PerformanceProfiler` and `TraceExporter` have no UIKit/SwiftUI dependency at all — you can use the Combine publisher or `currentTrace()` directly in any UIKit app without touching `ProfilerUI`.
 
+### 6. App-wide overlay with one line (recommended for UIKit)
+
+Hosting the overlay in a single view controller means it disappears whenever that screen isn't visible. `ProfilerOverlayWindow` handles all the `UIHostingController` / pass-through-window / touch-forwarding boilerplate internally — the client just calls `install(in:)` once:
+
+```swift
+import UIKit
+import ProfilerUI
+
+// SceneDelegate
+func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options: UIScene.ConnectionOptions) {
+    guard let windowScene = scene as? UIWindowScene else { return }
+    // ... configure your main window as usual ...
+
+    ProfilerOverlayWindow.install(in: windowScene)
+}
+```
+
+That's it — no `UIHostingController`, no custom `UIWindow` subclass, no manual `profiler.start()` call required on your end. The overlay floats above every screen, modal, and even alerts, and survives navigation since it lives outside your view controller hierarchy entirely.
+
+Need access to the underlying profiler (e.g. to export a trace)?
+
+```swift
+let overlay = ProfilerOverlayWindow.install(in: windowScene)
+let trace = overlay.profiler.currentTrace()
+```
+
+To remove it: `ProfilerOverlayWindow.remove()`.
+
+#### No `UIWindowScene`? (legacy single-window apps)
+
+If your app doesn't use the scene-based lifecycle and just has a single `UIWindow` in `AppDelegate`, pass that window directly instead — same one-line API, no `UIWindowScene` required:
+
+```swift
+import UIKit
+import ProfilerUI
+
+func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+) -> Bool {
+    // ... configure self.window as usual ...
+
+    ProfilerOverlayWindow.install(in: window!)
+    return true
+}
+```
+
+This attaches the overlay as a subview pinned to the window's edges instead of creating a second `UIWindow`, with the same touch-pass-through behavior — taps land on your app everywhere except directly on the overlay.
+
 ---
 
 ## Configuration
