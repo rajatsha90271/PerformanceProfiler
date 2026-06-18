@@ -6,8 +6,10 @@
 //
 
 import QuartzCore
-import UIKit
 import Atomics
+
+#if canImport(UIKit)
+import UIKit
 
 /// Measures rendered frames per second using `CADisplayLink`.
 ///
@@ -70,3 +72,18 @@ public final class FPSSampler {
         }
     }
 }
+
+#else
+
+/// Stub for platforms where `CADisplayLink` is unavailable (macOS without UIKit).
+/// `currentFPS` always returns 0; `start()` and `stop()` are no-ops.
+public final class FPSSampler {
+    public init() {}
+
+    @MainActor public func start() {}
+    @MainActor public func stop() {}
+
+    public var currentFPS: Float { 0 }
+}
+
+#endif

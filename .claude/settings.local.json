@@ -10,7 +10,9 @@
       "Bash(git branch *)",
       "Bash(git push *)",
       "Bash(git pull *)",
-      "Bash(xcrun xcodebuild *)"
+      "Bash(xcrun xcodebuild *)",
+      "Bash(swift build *)",
+      "Bash(echo \"EXIT:$?\")"
     ]
   }
 }
